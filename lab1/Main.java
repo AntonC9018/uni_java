@@ -1,12 +1,12 @@
 public class Main {
     public static void main(String[] args)
     {
-        int[] weights = new int[] { 10, 10, 30, 50 };
-        Transport train = new Transport(4, weights, Transport.Type.TRAIN, 200);
-        Transport ghost = new Transport();
+        int[] weights = { 10, 10, 30, 50 };
+        Transport train     = new Transport(4, weights, Transport.Type.TRAIN, 200);
+        Transport ghost     = new Transport();
         Transport trainCopy = new Transport(train);
-        Transport emptyCar = new Transport(Transport.Type.CAR, 150);
-        Transport random = Transport.createRandom();
+        Transport emptyCar  = new Transport(Transport.Type.CAR, 150);
+        Transport random    = Transport.createRandom();
 
         {
             Transport[] transports = { train, ghost, trainCopy, emptyCar, random };

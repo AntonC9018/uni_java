@@ -240,9 +240,9 @@ public class Transport {
             Writer writer = new FileWriter(fileName);
             writer.append(String.valueOf(numPassengers));
             writer.append('\n');
-            for (Integer i : passengerWeights)
+            for (int i : passengerWeights)
             {
-                writer.append(i.toString());
+                writer.append(String.valueOf(i));
                 writer.append('\n');
             }
             writer.append(this.type.toString());
