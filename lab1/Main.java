@@ -1,13 +1,7 @@
-import java.util.ArrayList;
-
 public class Main {
     public static void main(String[] args)
     {
-        ArrayList<Integer> weights = new ArrayList<Integer>(4);
-        weights.add(50);
-        weights.add(50);
-        weights.add(50);
-        weights.add(50);
+        int[] weights = new int[] { 10, 10, 30, 50 };
         Transport train = new Transport(4, weights, Transport.Type.TRAIN, 200);
         Transport ghost = new Transport();
         Transport trainCopy = new Transport(train);

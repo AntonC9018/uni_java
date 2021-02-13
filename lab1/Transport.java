@@ -3,7 +3,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -13,7 +12,7 @@ public class Transport {
     private static int transportCount;
 
     private int numPassengers;
-    private ArrayList<Integer> passengerWeights;
+    private int[] passengerWeights;
     public enum Type {
         NOT_SPECIFIED, AIRPLANE, CAR, BICYCLE, TRAIN
     };
@@ -54,12 +53,12 @@ public class Transport {
     //     Transport.transportCount = transportCount;
     // }
 
-    public ArrayList<Integer> getPassengerWeights() 
+    public int[] getPassengerWeights() 
     {
         return passengerWeights;
     }
 
-    public void setPassengerWeights(ArrayList<Integer> passengerWeights) 
+    public void setPassengerWeights(int[] passengerWeights) 
     {
         this.passengerWeights = passengerWeights;
     }
@@ -71,13 +70,13 @@ public class Transport {
 
     public Transport()
     {
-        this.passengerWeights = new ArrayList<Integer>();
+        this.passengerWeights = new int[0];
         this.type = Type.NOT_SPECIFIED;
         transportCount++;
     }
 
-    public Transport(int numPassengers, ArrayList<Integer> passengerWeights, Transport.Type type, int maxSpeed) {
-        assert(passengerWeights.size() == numPassengers);
+    public Transport(int numPassengers, int[] passengerWeights, Transport.Type type, int maxSpeed) {
+        assert(passengerWeights.length == numPassengers);
         this.numPassengers = numPassengers;
         this.passengerWeights = passengerWeights;
         this.type = type;
@@ -88,7 +87,7 @@ public class Transport {
     public Transport(Transport.Type type, int maxSpeed)
     {
         this.numPassengers = 0;
-        this.passengerWeights = new ArrayList<Integer>();
+        this.passengerWeights = new int[0];
         this.type = type;
         this.maxSpeed = maxSpeed;
         transportCount++;
@@ -97,7 +96,7 @@ public class Transport {
     public Transport(Transport transport)
     {
         this.numPassengers = transport.numPassengers;
-        this.passengerWeights = new ArrayList<>(transport.passengerWeights);
+        this.passengerWeights = transport.passengerWeights.clone();
         this.type = transport.type;
         this.maxSpeed = transport.maxSpeed;
         transportCount++;
@@ -112,11 +111,11 @@ public class Transport {
         int numPassengers = scan.nextInt();
         
         // Weight for each passenger
-        ArrayList<Integer> passengerWeights = new ArrayList<Integer>(numPassengers);
+        int[] passengerWeights = new int[numPassengers];
         for (int i = 0; i < numPassengers; i++)
         {
             System.out.format("Enter passengerWeights[%d] (in kg): ", i);
-            passengerWeights.add(scan.nextInt());
+            passengerWeights[i] = scan.nextInt();
         }
         
         // The type
@@ -148,10 +147,10 @@ public class Transport {
     {
         Random rand = new Random();
         int numPassengers = rand.nextInt(11);
-        ArrayList<Integer> passengerWeights = new ArrayList<Integer>(numPassengers);
+        int[] passengerWeights = new int[numPassengers];
         for (int i = 0; i < numPassengers; i++)
         {
-            passengerWeights.add(20 + rand.nextInt(101));
+            passengerWeights[i] = 20 + rand.nextInt(101);
         }
         Transport.Type[] allTypes = Transport.Type.values();
         Transport.Type type = allTypes[rand.nextInt(allTypes.length)];
@@ -163,7 +162,7 @@ public class Transport {
     public int getTotalPassengerWeight()
     {
         int sum = 0;
-        for (Integer i : passengerWeights)
+        for (int i : passengerWeights)
         {
             sum += i;
         }
@@ -186,7 +185,7 @@ public class Transport {
         System.out.print("Passenger weights: ");
         for (int i = 0; i < numPassengers; i++)
         {
-            System.out.print(passengerWeights.get(i));
+            System.out.print(passengerWeights[i]);
             if (i != numPassengers - 1)
             {
                 System.out.print(", ");
@@ -210,10 +209,10 @@ public class Transport {
             FileInputStream inputStream = new FileInputStream(fileName);
             Scanner scan = new Scanner(inputStream);
             this.numPassengers = scan.nextInt();
-            this.passengerWeights = new ArrayList<Integer>(numPassengers);
+            this.passengerWeights = new int[numPassengers];
             for (int i = 0; i < numPassengers; i++)
             {
-                passengerWeights.add(scan.nextInt());
+                passengerWeights[i] = scan.nextInt();
             }
             scan.nextLine(); // Skip the new line character. 
             this.type = Transport.Type.valueOf(scan.nextLine());
