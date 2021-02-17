@@ -2,7 +2,7 @@ public class Main {
     public static void main(String[] args)
     {
         int[] weights = { 10, 10, 30, 50 };
-        Transport train     = new Transport(4, weights, Transport.Type.TRAIN, 200);
+        Transport train     = new Transport(weights, Transport.Type.TRAIN, 200);
         Transport ghost     = new Transport();
         Transport trainCopy = new Transport(train);
         Transport emptyCar  = new Transport(Transport.Type.CAR, 150);
@@ -22,10 +22,32 @@ public class Main {
                 System.out.println(transportTitles[i]);
                 transports[i].print();
             }
+        }
+        {
+            // The rest of the array will be filled with 0's.
+            ghost.setNumPassengers(5);
+            
+            System.out.println("===================");
+            System.out.println("... Expecting zeros for the weights ...");
+            ghost.print();
+            
+            // Setting the weights using a reference to the internal array.
+            int[] ghostWeights = ghost.getPassengerWeights();
+            ghostWeights[0] = 50;
+            ghostWeights[1] = 2;
+
+            System.out.println("===================");
+            ghost.print();
+
+            // Setting a new array of weights.
+            ghost.setPassengerWeights(new int[] { 1, 2, 3, 4 });
+
+            System.out.println("===================");
+            ghost.print();
             System.out.println("===================");
         }
         {
-            // The train has more passengers, so the first one will be printed
+            // The train has more passengers, so the first one will be printed.
             if (train.compareByNumPassengersTo(emptyCar))
             {
                 System.out.println("Train has the same number of passengers as the empty car.");
@@ -34,12 +56,7 @@ public class Main {
             {
                 System.out.println("Train has a different number of passengers than the empty car.");
             }
-            // Set the number of passengers in the empty car equal to the number of passengers in the train. 
-            // Note that this would invalidate the integrity of the empty car, since the passenger weight 
-            // vector is not adjusted accordingly, so realistically this change should not be even allowed.
-            // The setter ideally should take an array of weights to use to adjust the vector.
-            // Come to think of it, the vector setter should also adjust the number of passengers accordingly,
-            // or this action shouldn't even be allowed.
+
             emptyCar.setNumPassengers(train.getNumPassengers());
             
             // The train has the same amount of passengers, since we've just adjusted the car.

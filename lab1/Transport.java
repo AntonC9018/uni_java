@@ -11,7 +11,6 @@ import java.util.Scanner;
 public class Transport {
     private static int transportCount;
 
-    private int numPassengers;
     private int[] passengerWeights;
     public enum Type {
         NOT_SPECIFIED, AIRPLANE, CAR, BICYCLE, TRAIN
@@ -21,7 +20,29 @@ public class Transport {
 
     public int getNumPassengers() 
     {
-        return numPassengers;
+        return passengerWeights.length;
+    }
+
+    // Schimbam numarul de elemente in passengerWeights
+    public void setNumPassengers(int numPassengers) 
+    {
+        int[] prevWeights = passengerWeights;
+        passengerWeights = new int[numPassengers];
+
+        for (int i = 0; i < Math.min(prevWeights.length, numPassengers); i++)
+        {
+            passengerWeights[i] = prevWeights[i];
+        }
+    }
+
+    public int[] getPassengerWeights() 
+    {
+        return passengerWeights;
+    }
+
+    public void setPassengerWeights(int[] passengerWeights) 
+    {
+        this.passengerWeights = passengerWeights;
     }
 
     public int getMaxSpeed() 
@@ -49,25 +70,6 @@ public class Transport {
         return transportCount;
     }
 
-    // public static void setTransportCount(int transportCount) {
-    //     Transport.transportCount = transportCount;
-    // }
-
-    public int[] getPassengerWeights() 
-    {
-        return passengerWeights;
-    }
-
-    public void setPassengerWeights(int[] passengerWeights) 
-    {
-        this.passengerWeights = passengerWeights;
-    }
-
-    public void setNumPassengers(int numPassengers) 
-    {
-        this.numPassengers = numPassengers;
-    }
-
     public Transport()
     {
         this.passengerWeights = new int[0];
@@ -75,9 +77,7 @@ public class Transport {
         transportCount++;
     }
 
-    public Transport(int numPassengers, int[] passengerWeights, Transport.Type type, int maxSpeed) {
-        assert(passengerWeights.length == numPassengers);
-        this.numPassengers = numPassengers;
+    public Transport(int[] passengerWeights, Transport.Type type, int maxSpeed) {
         this.passengerWeights = passengerWeights;
         this.type = type;
         this.maxSpeed = maxSpeed;
@@ -86,7 +86,6 @@ public class Transport {
 
     public Transport(Transport.Type type, int maxSpeed)
     {
-        this.numPassengers = 0;
         this.passengerWeights = new int[0];
         this.type = type;
         this.maxSpeed = maxSpeed;
@@ -95,7 +94,6 @@ public class Transport {
 
     public Transport(Transport transport)
     {
-        this.numPassengers = transport.numPassengers;
         this.passengerWeights = transport.passengerWeights.clone();
         this.type = transport.type;
         this.maxSpeed = transport.maxSpeed;
@@ -106,41 +104,85 @@ public class Transport {
     {
         Scanner scan = new Scanner(System.in);
         
-        // Number of passengers
-        System.out.print("Enter numPassengers: ");
-        int numPassengers = scan.nextInt();
+        // This, however, only handles NEGATIVE VALUES.
+        int numPassengers;
+        do
+        {
+            // Number of passengers
+            System.out.print("Enter numPassengers: ");
+            
+            // The scan.nextInt() can also THROW if it doesn't get string that can be 
+            // converted in a number. If that happens, the program just crashes.
+            numPassengers = scan.nextInt();
+
+            // Here's the implementation with exception handling
+            // However, doing this for every variable is a lot of boilerplate.
+            // In order to avoid this, a new class for input has to be defined, which would
+            // get rid of the code repetition, however, this is well beyond the scope of this lab.
+            /*
+            try
+            {
+                numPassengers = scan.nextInt();
+            }
+            catch (InputMismatchException exception)
+            {
+                numPassengers = 0;
+                continue;
+            }
+            */
+
+        } while (numPassengers < 0);
         
         // Weight for each passenger
         int[] passengerWeights = new int[numPassengers];
         for (int i = 0; i < numPassengers; i++)
         {
-            System.out.format("Enter passengerWeights[%d] (in kg): ", i);
-            passengerWeights[i] = scan.nextInt();
+            do
+            {
+                System.out.format("Enter passengerWeights[%d] (in kg): ", i);
+                passengerWeights[i] = scan.nextInt();
+            } while (passengerWeights[i] < 0);
         }
+        scan.nextLine(); // skip the previous enter
         
         // The type
-        System.out.print("Enter type (");
-        Transport.Type[] allTypes = Transport.Type.values();
-        for (int i = 0; i < allTypes.length; i++)
+        Transport.Type type = null;
+        do
         {
-            System.out.print(allTypes[i]);
-            if (i != allTypes.length - 1)
+            System.out.print("Enter type (");
+            Transport.Type[] allTypes = Transport.Type.values();
+            for (int i = 0; i < allTypes.length; i++)
             {
-                System.out.print(", ");
+                System.out.print(allTypes[i]);
+                if (i != allTypes.length - 1)
+                {
+                    System.out.print(", ");
+                }
             }
-        }
-        System.out.print("): ");
-        scan.nextLine(); // skip the previous enter
-        String typeString = scan.nextLine().toUpperCase();
-        Transport.Type type = Transport.Type.valueOf(typeString);
+            System.out.print("): ");
+            String typeString = scan.nextLine().toUpperCase();
+            try
+            {
+                type = Transport.Type.valueOf(typeString);
+                break;
+            }
+            catch (IllegalArgumentException exception)
+            {
+                continue;
+            }
+        } while (type == null);
 
         // Max speed
-        System.out.print("Enter max speed (in km/hr): ");
-        int maxSpeed = scan.nextInt();
+        int maxSpeed;
+        do
+        {
+            System.out.print("Enter max speed (in km/hr): ");
+            maxSpeed = scan.nextInt();
+        } while (maxSpeed < 0);
 
         scan.close();
 
-        return new Transport(numPassengers, passengerWeights, type, maxSpeed);
+        return new Transport(passengerWeights, type, maxSpeed);
     }
 
     public static Transport createRandom()
@@ -156,7 +198,7 @@ public class Transport {
         Transport.Type type = allTypes[rand.nextInt(allTypes.length)];
         int maxSpeed = 10 + rand.nextInt(1000);
 
-        return new Transport(numPassengers, passengerWeights, type, maxSpeed);
+        return new Transport(passengerWeights, type, maxSpeed);
     }
 
     public int getTotalPassengerWeight()
@@ -171,7 +213,7 @@ public class Transport {
 
     public boolean compareByNumPassengersTo(Transport otherTransport)
     {
-        return numPassengers == otherTransport.numPassengers;
+        return getNumPassengers() == otherTransport.getNumPassengers();
     }
 
     public static boolean compareByTotalTotalPassengerWeight(Transport a, Transport b)
@@ -181,12 +223,12 @@ public class Transport {
 
     public void print()
     {
-        System.out.printf("Number of passengers: %d\n", numPassengers);
+        System.out.printf("Number of passengers: %d\n", getNumPassengers());
         System.out.print("Passenger weights: ");
-        for (int i = 0; i < numPassengers; i++)
+        for (int i = 0; i < passengerWeights.length; i++)
         {
             System.out.print(passengerWeights[i]);
-            if (i != numPassengers - 1)
+            if (i != passengerWeights.length - 1)
             {
                 System.out.print(", ");
             }
@@ -208,7 +250,7 @@ public class Transport {
         {
             FileInputStream inputStream = new FileInputStream(fileName);
             Scanner scan = new Scanner(inputStream);
-            this.numPassengers = scan.nextInt();
+            int numPassengers = scan.nextInt();
             this.passengerWeights = new int[numPassengers];
             for (int i = 0; i < numPassengers; i++)
             {
@@ -238,7 +280,7 @@ public class Transport {
         try
         {
             Writer writer = new FileWriter(fileName);
-            writer.append(String.valueOf(numPassengers));
+            writer.append(String.valueOf(passengerWeights.length));
             writer.append('\n');
             for (int i : passengerWeights)
             {

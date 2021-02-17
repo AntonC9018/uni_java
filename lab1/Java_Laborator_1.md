@@ -38,21 +38,15 @@ Pentru nota 10. Adaugator pentru tot ce este descris mai sus:
 
 ```java
 // main.java
-import java.util.ArrayList;
-
 public class Main {
     public static void main(String[] args)
     {
-        ArrayList<Integer> weights = new ArrayList<Integer>(4);
-        weights.add(50);
-        weights.add(50);
-        weights.add(50);
-        weights.add(50);
-        Transport train = new Transport(4, weights, Transport.Type.TRAIN, 200);
-        Transport ghost = new Transport();
+        int[] weights = { 10, 10, 30, 50 };
+        Transport train     = new Transport(weights, Transport.Type.TRAIN, 200);
+        Transport ghost     = new Transport();
         Transport trainCopy = new Transport(train);
-        Transport emptyCar = new Transport(Transport.Type.CAR, 150);
-        Transport random = Transport.createRandom();
+        Transport emptyCar  = new Transport(Transport.Type.CAR, 150);
+        Transport random    = Transport.createRandom();
 
         {
             Transport[] transports = { train, ghost, trainCopy, emptyCar, random };
@@ -68,10 +62,32 @@ public class Main {
                 System.out.println(transportTitles[i]);
                 transports[i].print();
             }
+        }
+        {
+            // The rest of the array will be filled with 0's.
+            ghost.setNumPassengers(5);
+            
+            System.out.println("===================");
+            System.out.println("... Expecting zeros for the weights ...");
+            ghost.print();
+            
+            // Setting the weights using a reference to the internal array.
+            int[] ghostWeights = ghost.getPassengerWeights();
+            ghostWeights[0] = 50;
+            ghostWeights[1] = 2;
+
+            System.out.println("===================");
+            ghost.print();
+
+            // Setting a new array of weights.
+            ghost.setPassengerWeights(new int[] { 1, 2, 3, 4 });
+
+            System.out.println("===================");
+            ghost.print();
             System.out.println("===================");
         }
         {
-            // The train has more passengers, so the first one will be printed
+            // The train has more passengers, so the first one will be printed.
             if (train.compareByNumPassengersTo(emptyCar))
             {
                 System.out.println("Train has the same number of passengers as the empty car.");
@@ -80,12 +96,7 @@ public class Main {
             {
                 System.out.println("Train has a different number of passengers than the empty car.");
             }
-            // Set the number of passengers in the empty car equal to the number of passengers in the train. 
-            // Note that this would invalidate the integrity of the empty car, since the passenger weight 
-            // vector is not adjusted accordingly, so realistically this change should not be even allowed.
-            // The setter ideally should take an array of weights to use to adjust the vector.
-            // Come to think of it, the vector setter should also adjust the number of passengers accordingly,
-            // or this action shouldn't even be allowed.
+
             emptyCar.setNumPassengers(train.getNumPassengers());
             
             // The train has the same amount of passengers, since we've just adjusted the car.
@@ -154,6 +165,8 @@ public class Main {
 }
 ```
 
+Решил удалить поле numPassengers, но оставил его как свойство (гет сет методы). Мотивируется это решение тем, что данная информация уже доступна через passengerWeights.length.
+
 ```java
 // transport.java
 import java.io.FileInputStream;
@@ -161,7 +174,6 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.NoSuchElementException;
 import java.util.Random;
@@ -170,8 +182,7 @@ import java.util.Scanner;
 public class Transport {
     private static int transportCount;
 
-    private int numPassengers;
-    private ArrayList<Integer> passengerWeights;
+    private int[] passengerWeights;
     public enum Type {
         NOT_SPECIFIED, AIRPLANE, CAR, BICYCLE, TRAIN
     };
@@ -180,7 +191,29 @@ public class Transport {
 
     public int getNumPassengers() 
     {
-        return numPassengers;
+        return passengerWeights.length;
+    }
+
+    // Schimbam numarul de elemente in passengerWeights
+    public void setNumPassengers(int numPassengers) 
+    {
+        int[] prevWeights = passengerWeights;
+        passengerWeights = new int[numPassengers];
+
+        for (int i = 0; i < Math.min(prevWeights.length, numPassengers); i++)
+        {
+            passengerWeights[i] = prevWeights[i];
+        }
+    }
+
+    public int[] getPassengerWeights() 
+    {
+        return passengerWeights;
+    }
+
+    public void setPassengerWeights(int[] passengerWeights) 
+    {
+        this.passengerWeights = passengerWeights;
     }
 
     public int getMaxSpeed() 
@@ -208,35 +241,14 @@ public class Transport {
         return transportCount;
     }
 
-    // public static void setTransportCount(int transportCount) {
-    //     Transport.transportCount = transportCount;
-    // }
-
-    public ArrayList<Integer> getPassengerWeights() 
-    {
-        return passengerWeights;
-    }
-
-    public void setPassengerWeights(ArrayList<Integer> passengerWeights) 
-    {
-        this.passengerWeights = passengerWeights;
-    }
-
-    public void setNumPassengers(int numPassengers) 
-    {
-        this.numPassengers = numPassengers;
-    }
-
     public Transport()
     {
-        this.passengerWeights = new ArrayList<Integer>();
+        this.passengerWeights = new int[0];
         this.type = Type.NOT_SPECIFIED;
         transportCount++;
     }
 
-    public Transport(int numPassengers, ArrayList<Integer> passengerWeights, Transport.Type type, int maxSpeed) {
-        assert(passengerWeights.size() == numPassengers);
-        this.numPassengers = numPassengers;
+    public Transport(int[] passengerWeights, Transport.Type type, int maxSpeed) {
         this.passengerWeights = passengerWeights;
         this.type = type;
         this.maxSpeed = maxSpeed;
@@ -245,8 +257,7 @@ public class Transport {
 
     public Transport(Transport.Type type, int maxSpeed)
     {
-        this.numPassengers = 0;
-        this.passengerWeights = new ArrayList<Integer>();
+        this.passengerWeights = new int[0];
         this.type = type;
         this.maxSpeed = maxSpeed;
         transportCount++;
@@ -254,8 +265,7 @@ public class Transport {
 
     public Transport(Transport transport)
     {
-        this.numPassengers = transport.numPassengers;
-        this.passengerWeights = new ArrayList<>(transport.passengerWeights);
+        this.passengerWeights = transport.passengerWeights.clone();
         this.type = transport.type;
         this.maxSpeed = transport.maxSpeed;
         transportCount++;
@@ -265,63 +275,107 @@ public class Transport {
     {
         Scanner scan = new Scanner(System.in);
         
-        // Number of passengers
-        System.out.print("Enter numPassengers: ");
-        int numPassengers = scan.nextInt();
+        // This, however, only handles NEGATIVE VALUES.
+        int numPassengers;
+        do
+        {
+            // Number of passengers
+            System.out.print("Enter numPassengers: ");
+            
+            // The scan.nextInt() can also THROW if it doesn't get string that can be 
+            // converted in a number. If that happens, the program just crashes.
+            numPassengers = scan.nextInt();
+
+            // Here's the implementation with exception handling
+            // However, doing this for every variable is a lot of boilerplate.
+            // In order to avoid this, a new class for input has to be defined, which would
+            // get rid of the code repetition, however, this is well beyond the scope of this lab.
+            /*
+            try
+            {
+                numPassengers = scan.nextInt();
+            }
+            catch (InputMismatchException exception)
+            {
+                numPassengers = 0;
+                continue;
+            }
+            */
+
+        } while (numPassengers < 0);
         
         // Weight for each passenger
-        ArrayList<Integer> passengerWeights = new ArrayList<Integer>(numPassengers);
+        int[] passengerWeights = new int[numPassengers];
         for (int i = 0; i < numPassengers; i++)
         {
-            System.out.format("Enter passengerWeights[%d] (in kg): ", i);
-            passengerWeights.add(scan.nextInt());
+            do
+            {
+                System.out.format("Enter passengerWeights[%d] (in kg): ", i);
+                passengerWeights[i] = scan.nextInt();
+            } while (passengerWeights[i] < 0);
         }
+        scan.nextLine(); // skip the previous enter
         
         // The type
-        System.out.print("Enter type (");
-        Transport.Type[] allTypes = Transport.Type.values();
-        for (int i = 0; i < allTypes.length; i++)
+        Transport.Type type = null;
+        do
         {
-            System.out.print(allTypes[i]);
-            if (i != allTypes.length - 1)
+            System.out.print("Enter type (");
+            Transport.Type[] allTypes = Transport.Type.values();
+            for (int i = 0; i < allTypes.length; i++)
             {
-                System.out.print(", ");
+                System.out.print(allTypes[i]);
+                if (i != allTypes.length - 1)
+                {
+                    System.out.print(", ");
+                }
             }
-        }
-        System.out.print("): ");
-        scan.nextLine(); // skip the previous enter
-        String typeString = scan.nextLine().toUpperCase();
-        Transport.Type type = Transport.Type.valueOf(typeString);
+            System.out.print("): ");
+            String typeString = scan.nextLine().toUpperCase();
+            try
+            {
+                type = Transport.Type.valueOf(typeString);
+                break;
+            }
+            catch (IllegalArgumentException exception)
+            {
+                continue;
+            }
+        } while (type == null);
 
         // Max speed
-        System.out.print("Enter max speed (in km/hr): ");
-        int maxSpeed = scan.nextInt();
+        int maxSpeed;
+        do
+        {
+            System.out.print("Enter max speed (in km/hr): ");
+            maxSpeed = scan.nextInt();
+        } while (maxSpeed < 0);
 
         scan.close();
 
-        return new Transport(numPassengers, passengerWeights, type, maxSpeed);
+        return new Transport(passengerWeights, type, maxSpeed);
     }
 
     public static Transport createRandom()
     {
         Random rand = new Random();
         int numPassengers = rand.nextInt(11);
-        ArrayList<Integer> passengerWeights = new ArrayList<Integer>(numPassengers);
+        int[] passengerWeights = new int[numPassengers];
         for (int i = 0; i < numPassengers; i++)
         {
-            passengerWeights.add(20 + rand.nextInt(101));
+            passengerWeights[i] = 20 + rand.nextInt(101);
         }
         Transport.Type[] allTypes = Transport.Type.values();
         Transport.Type type = allTypes[rand.nextInt(allTypes.length)];
         int maxSpeed = 10 + rand.nextInt(1000);
 
-        return new Transport(numPassengers, passengerWeights, type, maxSpeed);
+        return new Transport(passengerWeights, type, maxSpeed);
     }
 
     public int getTotalPassengerWeight()
     {
         int sum = 0;
-        for (Integer i : passengerWeights)
+        for (int i : passengerWeights)
         {
             sum += i;
         }
@@ -330,7 +384,7 @@ public class Transport {
 
     public boolean compareByNumPassengersTo(Transport otherTransport)
     {
-        return numPassengers == otherTransport.numPassengers;
+        return getNumPassengers() == otherTransport.getNumPassengers();
     }
 
     public static boolean compareByTotalTotalPassengerWeight(Transport a, Transport b)
@@ -340,12 +394,12 @@ public class Transport {
 
     public void print()
     {
-        System.out.printf("Number of passengers: %d\n", numPassengers);
+        System.out.printf("Number of passengers: %d\n", getNumPassengers());
         System.out.print("Passenger weights: ");
-        for (int i = 0; i < numPassengers; i++)
+        for (int i = 0; i < passengerWeights.length; i++)
         {
-            System.out.print(passengerWeights.get(i));
-            if (i != numPassengers - 1)
+            System.out.print(passengerWeights[i]);
+            if (i != passengerWeights.length - 1)
             {
                 System.out.print(", ");
             }
@@ -367,11 +421,11 @@ public class Transport {
         {
             FileInputStream inputStream = new FileInputStream(fileName);
             Scanner scan = new Scanner(inputStream);
-            this.numPassengers = scan.nextInt();
-            this.passengerWeights = new ArrayList<Integer>(numPassengers);
+            int numPassengers = scan.nextInt();
+            this.passengerWeights = new int[numPassengers];
             for (int i = 0; i < numPassengers; i++)
             {
-                passengerWeights.add(scan.nextInt());
+                passengerWeights[i] = scan.nextInt();
             }
             scan.nextLine(); // Skip the new line character. 
             this.type = Transport.Type.valueOf(scan.nextLine());
@@ -397,11 +451,11 @@ public class Transport {
         try
         {
             Writer writer = new FileWriter(fileName);
-            writer.append(String.valueOf(numPassengers));
+            writer.append(String.valueOf(passengerWeights.length));
             writer.append('\n');
-            for (Integer i : passengerWeights)
+            for (int i : passengerWeights)
             {
-                writer.append(i.toString());
+                writer.append(String.valueOf(i));
                 writer.append('\n');
             }
             writer.append(this.type.toString());
@@ -423,66 +477,103 @@ public class Transport {
 
 ## Rezultatele
 
-Compilez programul cu `javac main.java transport.java`. 
+Compilez programul cu `javac main.java`. 
 
 Pornesc programul cu `java Main`.
 
 ```
-====== Train ======                                                       
-Number of passengers: 4                                                   
-Passenger weights: 50, 50, 50, 50                                         
-The type is: TRAIN                                                        
-The max speed is: 200                                                     
-====== Ghost ======                                                       
-Number of passengers: 0                                                   
-Passenger weights:                                                        
-The type is: NOT_SPECIFIED                                                
-The max speed is: 0                                                       
-=== Train Copy ====                                                       
-Number of passengers: 4                                                   
-Passenger weights: 50, 50, 50, 50                                         
-The type is: TRAIN                                                        
-The max speed is: 200                                                     
-==== Empty car ====                                                       
-Number of passengers: 0                                                   
-Passenger weights:                                                        
-The type is: CAR                                                          
-The max speed is: 150                                                     
-===== Random ======                                                       
-Number of passengers: 10                                                  
-Passenger weights: 104, 108, 77, 114, 96, 107, 95, 65, 110, 22            
-The type is: CAR                                                
-The max speed is: 654                                                     
-===================                                                       
-Train has a different number of passengers than the empty car.            
-Train has the same number of passengers as the empty car.                 
-===================                                                       
-Train has a different passenger weight (200) than the random (898).       
-Train has the same passenger weight (200) as the train copy.              
-===================                                                       
-Average passenger weight of the random is 89.800003.                      
-===================                                                       
-Numarul total de transporturi create: 5                                   
-===================                                                       
-Saving the train to disk as train.txt.                                    
-Reading the train back in from disk.                                      
-Printing out the deserialized train.                                      
-Number of passengers: 4                                                   
-Passenger weights: 50, 50, 50, 50                                         
-The type is: TRAIN                                                        
-The max speed is: 200                                                     
-===================                                                       
-Enter numPassengers: 4                                                    
-Enter passengerWeights[0] (in kg): 1                                      
-Enter passengerWeights[1] (in kg): 2                                      
-Enter passengerWeights[2] (in kg): 3                                      
-Enter passengerWeights[3] (in kg): 4                                      
-Enter type (NOT_SPECIFIED, AIRPLANE, CAR, BICYCLE, TRAIN): bicycle        
-Enter max speed (in km/hr): 89                                            
-Number of passengers: 4                                                   
-Passenger weights: 1, 2, 3, 4                                             
-The type is: BICYCLE                                                      
-The max speed is: 89                                                      
+====== Train ======
+Number of passengers: 4
+Passenger weights: 10, 10, 30, 50
+The type is: TRAIN
+The max speed is: 200
+====== Ghost ======
+Number of passengers: 0
+Passenger weights:
+The type is: NOT_SPECIFIED
+The max speed is: 0
+=== Train Copy ====
+Number of passengers: 4
+Passenger weights: 10, 10, 30, 50
+The type is: TRAIN
+The max speed is: 200
+==== Empty car ====
+Number of passengers: 0
+Passenger weights:
+The type is: CAR
+The max speed is: 150
+===== Random ======
+Number of passengers: 10
+Passenger weights: 61, 88, 71, 71, 32, 106, 75, 27, 73, 115
+The type is: NOT_SPECIFIED
+The max speed is: 994
+===================
+... Expecting zeros for the weights ...
+Number of passengers: 5
+Passenger weights: 0, 0, 0, 0, 0
+The type is: NOT_SPECIFIED
+The max speed is: 0
+===================
+Number of passengers: 5
+Passenger weights: 50, 2, 0, 0, 0
+The type is: NOT_SPECIFIED
+The max speed is: 0
+===================
+Number of passengers: 4
+Passenger weights: 1, 2, 3, 4
+The type is: NOT_SPECIFIED
+The max speed is: 0
+===================
+Train has a different number of passengers than the empty car.
+Train has the same number of passengers as the empty car.
+===================
+Train has a different passenger weight (100) than the random (719).
+Train has the same passenger weight (100) as the train copy.
+===================
+Average passenger weight of the random is 71.900002.
+===================
+Numarul total de transporturi create: 5
+===================
+Saving the train to disk as train.txt.
+Reading the train back in from disk.
+Printing out the deserialized train.
+Number of passengers: 4
+Passenger weights: 10, 10, 30, 50
+The type is: TRAIN
+The max speed is: 200
+===================  
+Enter numPassengers: -2
+Enter numPassengers: 3
+Enter passengerWeights[0] (in kg): -5
+Enter passengerWeights[0] (in kg): 9
+Enter passengerWeights[1] (in kg): 15
+Enter passengerWeights[2] (in kg): 20
+Enter type (NOT_SPECIFIED, AIRPLANE, CAR, BICYCLE, TRAIN): l
+Enter type (NOT_SPECIFIED, AIRPLANE, CAR, BICYCLE, TRAIN): jksfdjksfd
+Enter type (NOT_SPECIFIED, AIRPLANE, CAR, BICYCLE, TRAIN): train
+Enter max speed (in km/hr): 5
+Number of passengers: 3
+Passenger weights: 9, 15, 20
+The type is: TRAIN
+The max speed is: 5                                                   
+```
+
+Заостряю внимание на моменте с валидацией ввода. Отрицательное число пассажиров, отрицательный вес пассажиров и отрицательная максимальная скорость не допускаются. В случае их воода, данные просто запрашиваются еще раз. 
+
+В случае, если вводится строка, которая не конвиртируется в число, программа крашится. Однако, в коде отмечено комментарием, как это исправить.
+
+Невалидные значения енума тоже не допускаются.
+
+```
+Enter numPassengers: -2
+Enter numPassengers: 3
+Enter passengerWeights[0] (in kg): -5
+Enter passengerWeights[0] (in kg): 9
+Enter passengerWeights[1] (in kg): 15
+Enter passengerWeights[2] (in kg): 20
+Enter type (NOT_SPECIFIED, AIRPLANE, CAR, BICYCLE, TRAIN): l
+Enter type (NOT_SPECIFIED, AIRPLANE, CAR, BICYCLE, TRAIN): jksfdjksfd
+Enter type (NOT_SPECIFIED, AIRPLANE, CAR, BICYCLE, TRAIN): train
 ```
 
 ## Concluziile
@@ -492,5 +583,3 @@ In general, am avut experienta cu java cu 3 ani in urma, cand incepeam sa studie
 Pentru mine, faptul ca C are pointeri nu ma deranjeaza - chiar inversul. Eu sunt tipul de programator care apreciaza flexibilitatea ce aduce nivelul scazut al lui C. 
 
 Eu personal nu am aflat in acest laborator nimic nou, deoarece deja m-am dus prin aceasta: clasele, modificatori de acces, proprietati, memrii statici, constructori, metode membre si cele statice, lucru cu input stream si output stream, fisierele, formatarea, structuri de date (array list, linked list, has map) etc.
-
-In opinia mea codul este auto-explicativ, dar daca trebuie sa explic unele momente din cod — nu am probeleme cu aceasta. Voi fi la universitate saptamana viitoare (probabil).
