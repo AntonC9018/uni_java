@@ -1,4 +1,3 @@
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public final class Prompt 
@@ -14,11 +13,13 @@ public final class Prompt
             try
             {
                 System.out.printf("Enter %s: ", message);
-                return scanner.nextInt();
+                String str = scanner.nextLine();
+                int result = Integer.parseInt(str);
+                return result;
             }
-            catch (InputMismatchException exc)
+            catch (NumberFormatException exc)
             {
-                System.out.println("Input Mismatch!");
+                System.out.println("That's not a number!");
             }
         }
     }
@@ -33,18 +34,33 @@ public final class Prompt
         {
             try
             {
-                System.out.printf("Enter %s (must be between %d and %d): ", message, min, max);
-                result = scanner.nextInt();
-                hasErrors = false;
+                System.out.printf("Enter %s (%d <= x <= %d): ", message, min, max);
+                String str = scanner.nextLine();
+                result = Integer.parseInt(str);
+                
+                if (result < min)
+                {
+                    hasErrors = true;
+                    System.out.printf("The number must be >= %d\n", min);
+                }
+                else if (result > max)
+                {
+                    hasErrors = true;
+                    System.out.printf("The number must be <= %d\n", max);
+                }
+                else
+                {
+                    hasErrors = false;
+                }
             }
-            catch (InputMismatchException exc)
+            catch (NumberFormatException exc)
             {
-                System.out.println("Input Mismatch!");
+                System.out.println("That's not a number!");
                 hasErrors = true;
-                continue;
             }
+            
         }
-        while (hasErrors || result >= min && result <= max);
+        while (hasErrors);
         return result;
     }
     
@@ -57,18 +73,26 @@ public final class Prompt
         {
             try
             {
-                System.out.printf("Enter %s (must be positive): ", message);
-                result = scanner.nextInt();
-                hasErrors = false;
+                System.out.printf("Enter %s: ", message);
+                String str = scanner.nextLine();
+                result = Integer.parseInt(str);
+                if (result <= 0)
+                {
+                    System.out.printf("The number must be > 0\n");
+                    hasErrors = true;
+                }
+                else 
+                {
+                    hasErrors = false;
+                }
             }
-            catch (InputMismatchException exc)
+            catch (NumberFormatException exc)
             {
-                System.out.println("Input Mismatch!");
+                System.out.println("That's not a number!");
                 hasErrors = true;
-                continue;
             }
         }
-        while (hasErrors || result <= 0);
+        while (hasErrors);
         return result;
     }
 
@@ -81,31 +105,43 @@ public final class Prompt
         {
             try
             {
-                System.out.printf("Enter %s (must be positive or 0): ", message);
-                result = scanner.nextInt();
-                hasErrors = false;
+                System.out.printf("Enter %s: ", message);
+                String str = scanner.nextLine();
+                result = Integer.parseInt(str);
+                if (result < 0)
+                {
+                    System.out.printf("The number must be >= 0\n");
+                    hasErrors = true;
+                }
+                else
+                {
+                    hasErrors = false;
+                }
             }
-            catch (InputMismatchException exc)
+            catch (NumberFormatException exc)
             {
-                System.out.println("Input Mismatch!");
+                System.out.println("That's not a number!");
                 hasErrors = true;
-                continue;
             }
         }
-        while (hasErrors || result < 0);
+        while (hasErrors);
         return result;
     }
 
     public static boolean bool(String message, String trueString, String falseString)
     {
-        String input;
-
-        do
+        while (true)
         {
-            System.out.printf("Enter %s (%s or %s): ", message, trueString, falseString);
-            input = scanner.nextLine().toLowerCase();
+            System.out.printf("Enter %s (\"%s\" or \"%s\"): ", message, trueString, falseString);
+            String input = scanner.nextLine().toLowerCase();
+            if (!input.equals(trueString) && !input.equals(falseString))
+            {
+                System.out.printf("\"%s\" is not a valid option.\n", input);
+            }
+            else 
+            {
+                return input.equals(trueString);
+            }
         }
-        while (input != trueString && input != falseString);
-        return input == trueString;
     }
 }

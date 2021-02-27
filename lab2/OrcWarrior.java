@@ -9,8 +9,16 @@ public class OrcWarrior extends Orc implements IDashing
         super(position, mass, health, damage, leftHand, rightHand, armor);
     }
 
-    @Override
-    public void dash(Creature creature) {
+    public void tryDash(Creature creature)
+    {
+        if (isAlive() && creature.isAlive())
+        {
+            dash(creature);
+        }
+    }
+
+    public void dash(Creature creature)
+    {
         // We're able to dash only if on the same row or column
         if (this.position.x == creature.position.x || this.position.y == creature.position.y)
         {

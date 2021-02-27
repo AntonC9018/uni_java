@@ -33,8 +33,13 @@ public class Humanoid extends Creature {
     }
 
     @Override
-    public void beAttacked(int damage) {
-        super.beAttacked(this.armor.blockDamage(damage));
+    public void beAttacked(int damage) 
+    {
+        if (this.armor != null)
+        {
+            damage = this.armor.blockDamage(damage);
+        }
+        super.beAttacked(damage);
     }
 
     public Armor equipArmor(Armor armor) {

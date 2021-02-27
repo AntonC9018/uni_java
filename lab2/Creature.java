@@ -6,7 +6,7 @@ public class Creature extends Entity
     protected int health;
     protected int damage = defaultCreatureAttackDamage;
 
-    final static int defaultCreatureAttackDamage = 1;
+    private final static int defaultCreatureAttackDamage = 1;
 
     public Creature()
     {
@@ -83,8 +83,10 @@ public class Creature extends Entity
     @Override
     public void promptInput() 
     {
-        position.x = Prompt.int_("x position");
-        position.y = Prompt.int_("y position");
+        position = new Vector2(
+            Prompt.int_("x position"),
+            Prompt.int_("y position")
+        );
         mass   = Prompt.positiveInt("mass");
         health = Prompt.positiveInt("health");
         damage = Prompt.positiveOrZeroInt("damage");
@@ -92,8 +94,7 @@ public class Creature extends Entity
 
     public void randomize()
     {
-        position.x = random.nextInt(50);
-        position.y = random.nextInt(50);
+        position = new Vector2(random.nextInt(50), random.nextInt(50));
         mass   = random.nextInt(50) + 10;
         health = random.nextInt(5) + 2;
         damage = random.nextInt(3) + 1;
