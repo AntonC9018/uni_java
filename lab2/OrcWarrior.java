@@ -4,9 +4,9 @@ public class OrcWarrior extends Orc implements IDashing
     {
     }
 
-    public OrcWarrior(Vector2 position, int mass, int health, int damage, Arm leftHand, Arm rightHand, Armor armor) 
+    public OrcWarrior(Vector2 position, int mass, int health, int damage, Arm leftArm, Arm rightArm, Armor armor) 
     {
-        super(position, mass, health, damage, leftHand, rightHand, armor);
+        super(position, mass, health, damage, leftArm, rightArm, armor);
     }
 
     public void tryDash(Creature creature)

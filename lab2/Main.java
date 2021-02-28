@@ -6,7 +6,7 @@ public class Main
     {
         // Constructors with parameters
         OrcWarrior orcWarrior_1 = new OrcWarrior(
-            // position, mass, health, damage, left hand, right hand, armor
+            // position, mass, health, damage, left arm, right arm, armor
             new Vector2(1, 1), 5, 5, 2, new Arm(false), new Arm(false), null
         );
         OrcWarrior orcWarrior_2 = new OrcWarrior(
@@ -121,7 +121,7 @@ public class Main
             creature,
             randomOrcWarrior,
             randomOrc,
-            new Arm(false) // also includes an unattackable hand
+            new Arm(false) // also includes an unattackable arm
         };
 
         // Need to show all of them to the screen

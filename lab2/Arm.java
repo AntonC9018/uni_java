@@ -19,7 +19,7 @@ public class Arm extends Entity
     @Override
     public void promptInput() 
     {
-        metallic = Prompt.bool("hand's material", "metal", "normal");
+        metallic = Prompt.bool("arm's material", "metal", "normal");
     }
 
     @Override

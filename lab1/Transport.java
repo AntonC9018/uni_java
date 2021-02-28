@@ -104,7 +104,7 @@ public class Transport {
     {
         Scanner scan = new Scanner(System.in);
         
-        // This, however, only handles NEGATIVE VALUES.
+        // This, however, only armles NEGATIVE VALUES.
         int numPassengers;
         do
         {
@@ -115,7 +115,7 @@ public class Transport {
             // converted in a number. If that happens, the program just crashes.
             numPassengers = scan.nextInt();
 
-            // Here's the implementation with exception handling
+            // Here's the implementation with exception armling
             // However, doing this for every variable is a lot of boilerplate.
             // In order to avoid this, a new class for input has to be defined, which would
             // get rid of the code repetition, however, this is well beyond the scope of this lab.

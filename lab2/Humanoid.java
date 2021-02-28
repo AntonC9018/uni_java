@@ -8,11 +8,11 @@ public class Humanoid extends Creature
     {
     }
 
-    public Humanoid(Vector2 position, int mass, int health, int damage, Arm leftHand, Arm rightHand, Armor armor) 
+    public Humanoid(Vector2 position, int mass, int health, int damage, Arm leftArm, Arm rightArm, Armor armor) 
     {
         super(position, mass, health, damage);
-        this.leftArm = leftHand;
-        this.rightArm = rightHand;
+        this.leftArm = leftArm;
+        this.rightArm = rightArm;
         this.armor = armor;
     }
 
@@ -58,16 +58,16 @@ public class Humanoid extends Creature
     {
         super.promptInput();
         // This can be cleaned up with templates
-        // That is Entity.promptCreate<Hand>(); or stuff like that
+        // That is Entity.promptCreate<Arm>(); or stuff like that
         // or with code generation (by a preprocessor program).
-        if (Prompt.bool("left hand?", "yes", "no"))
+        if (Prompt.bool("left arm?", "yes", "no"))
         {
             leftArm = new Arm();
             Entity.autoId(leftArm);
             leftArm.promptInput();
         }
 
-        if (Prompt.bool("right hand?", "yes", "no"))
+        if (Prompt.bool("right arm?", "yes", "no"))
         {
             rightArm = new Arm();
             Entity.autoId(rightArm);
