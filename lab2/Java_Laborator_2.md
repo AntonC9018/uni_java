@@ -24,6 +24,57 @@
 
 Решил сделать иерархию по примеру видеоигры. Скажем, возьмем следующие типы: `Entity` -> `Creature` -> `Humanoid` -> `Orc` -> `Orc Warrior`.
 
+```mermaid
+classDiagram
+Entity --|> Creature
+Entity --|> Arm
+Entity --|> Armor
+Entity : id
+Entity : abstract promptInput()
+Entity : abstract randomize()
+Entity : print()
+Entity : serializeTo(file)
+Arm --> Humanoid
+Arm : metallic
+Arm : isMetallic()
+Armor --> Humanoid
+Armor : block
+Armor : mass
+Armor : blockDamage()
+Creature --|> Humanoid
+Creature : mass
+Creature : damage
+Creature : health
+Creature : isAlive()
+Creature : getDamage()
+Creature : attack()
+Creature : beAttacked()
+Creature : move()
+Humanoid --|> Orc
+Humanoid : leftArm
+Humanoid : rightArm
+Humanoid : armor
+Orc --|> OrcWarrior
+Orc : rage
+Orc : enrage()
+Orc : isEnraged()
+Orc : calmDown()
+OrcWarrior : dash()
+IAttackable --o Creature
+IAttackable : beAttacked()
+IAttacking --o Creature
+IAttacking --* IDashing
+IAttacking : attack()
+IMoving --o Creature
+IMoving --* IDashing
+IMoving : move()
+IDashing --o OrcWarrior
+IDashing : dash()
+IWithMass --o Creature
+IWithMass --o Armor
+IWithMass : getMass()
+```
+
 > Ремарка: иерархия классов, как правило, не используется в видеоиграх, потому что она слишком жесткая ( и не только). В видеоиграх обычно используются более гибкие компоненты, которые модифицируют `Entity`.
 
 `Entity` обычно включает `entity_id` и список компонетов. Для лабы, оставим только айди.
@@ -36,7 +87,7 @@
 
 `OrcWarrior` добавляет метод `dash()`, который одновременно перемещает его, и атакует цель.
 
-Класс `Hand` наследуют `Entity` и содержит свойство `isMetallic()`.
+Класс `Arm` наследуют `Entity` и содержит свойство `isMetallic()`, которое указывает, если рука металлическая.
 
 Класс `Armor` наследует `Entity` и добавляет массу и броню.
 
@@ -62,19 +113,19 @@ public class Main
         // Constructors with parameters
         OrcWarrior orcWarrior_1 = new OrcWarrior(
             // position, mass, health, damage, left hand, right hand, armor
-            new Vector2(1, 1), 5, 5, 2, new Hand(false), new Hand(false), null
+            new Vector2(1, 1), 5, 5, 2, new Arm(false), new Arm(false), null
         );
         OrcWarrior orcWarrior_2 = new OrcWarrior(
-            new Vector2(1, 5), 2, 2, 1, new Hand(true), new Hand(true), new Armor(1, 3)
+            new Vector2(1, 5), 2, 2, 1, new Arm(true), new Arm(true), new Armor(1, 3)
         );
         Orc orc_1 = new Orc(
             new Vector2(1, 1), 5, 5, 2, null, null, new Armor(1, 3)
         );
         Orc orc_2 = new Orc(
-            new Vector2(1, 1), 5, 5, 1, new Hand(false), new Hand(false), new Armor(0, 3)
+            new Vector2(1, 1), 5, 5, 1, new Arm(false), new Arm(false), new Armor(0, 3)
         );
         Humanoid humanoid = new Humanoid(
-            new Vector2(5, 5), 1, 1, 1, new Hand(false), new Hand(false), new Armor(0, 1)
+            new Vector2(5, 5), 1, 1, 1, new Arm(false), new Arm(false), new Armor(0, 1)
         );
         Creature creature = new Creature(
             // position, mass, health, damage
@@ -167,7 +218,7 @@ public class Main
             creature,
             randomOrcWarrior,
             randomOrc,
-            new Hand(false) // also includes an unattackable hand
+            new Arm(false) // also includes an unattackable hand
         };
 
         // Need to show all of them to the screen

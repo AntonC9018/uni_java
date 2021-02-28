@@ -7,19 +7,19 @@ public class Main
         // Constructors with parameters
         OrcWarrior orcWarrior_1 = new OrcWarrior(
             // position, mass, health, damage, left hand, right hand, armor
-            new Vector2(1, 1), 5, 5, 2, new Hand(false), new Hand(false), null
+            new Vector2(1, 1), 5, 5, 2, new Arm(false), new Arm(false), null
         );
         OrcWarrior orcWarrior_2 = new OrcWarrior(
-            new Vector2(1, 5), 2, 2, 1, new Hand(true), new Hand(true), new Armor(1, 3)
+            new Vector2(1, 5), 2, 2, 1, new Arm(true), new Arm(true), new Armor(1, 3)
         );
         Orc orc_1 = new Orc(
             new Vector2(1, 1), 5, 5, 2, null, null, new Armor(1, 3)
         );
         Orc orc_2 = new Orc(
-            new Vector2(1, 1), 5, 5, 1, new Hand(false), new Hand(false), new Armor(0, 3)
+            new Vector2(1, 1), 5, 5, 1, new Arm(false), new Arm(false), new Armor(0, 3)
         );
         Humanoid humanoid = new Humanoid(
-            new Vector2(5, 5), 1, 1, 1, new Hand(false), new Hand(false), new Armor(0, 1)
+            new Vector2(5, 5), 1, 1, 1, new Arm(false), new Arm(false), new Armor(0, 1)
         );
         Creature creature = new Creature(
             // position, mass, health, damage
@@ -97,6 +97,15 @@ public class Main
         Humanoid human_3 = new Humanoid(new Vector2(2, 1), 1, 1, 1, null, null, null);
         assert(!human_1.isAtSamePoisition(human_3));
 
+        // unequip the current armor of orc_1
+        orc_1.equipArmor(null);
+        // store their mass without the armor
+        int orc1_mass = orc_1.getMass();
+        // equip armor with mass of 1
+        orc_1.equipArmor(new Armor(0, 1));
+        // make sure the mass increased by one
+        assert(orc1_mass == orc_1.getMass() - 1);
+
         // Print to the console
         orc_1.print();
         // Serialize to a file
@@ -112,7 +121,7 @@ public class Main
             creature,
             randomOrcWarrior,
             randomOrc,
-            new Hand(false) // also includes an unattackable hand
+            new Arm(false) // also includes an unattackable hand
         };
 
         // Need to show all of them to the screen

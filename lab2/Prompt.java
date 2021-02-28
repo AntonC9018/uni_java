@@ -19,7 +19,7 @@ public final class Prompt
             }
             catch (NumberFormatException exc)
             {
-                System.out.println("That's not a number!");
+                System.out.println("That's not a number.");
             }
         }
     }
@@ -55,7 +55,7 @@ public final class Prompt
             }
             catch (NumberFormatException exc)
             {
-                System.out.println("That's not a number!");
+                System.out.println("That's not a number.");
                 hasErrors = true;
             }
             
@@ -88,7 +88,7 @@ public final class Prompt
             }
             catch (NumberFormatException exc)
             {
-                System.out.println("That's not a number!");
+                System.out.println("That's not a number.");
                 hasErrors = true;
             }
         }
@@ -120,7 +120,7 @@ public final class Prompt
             }
             catch (NumberFormatException exc)
             {
-                System.out.println("That's not a number!");
+                System.out.println("That's not a number.");
                 hasErrors = true;
             }
         }

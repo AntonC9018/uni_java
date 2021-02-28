@@ -1,32 +1,37 @@
-public class Humanoid extends Creature {
-    protected Hand leftHand;
-    protected Hand rightHand;
+public class Humanoid extends Creature 
+{
+    protected Arm leftArm;
+    protected Arm rightArm;
     protected Armor armor;
 
     public Humanoid() 
     {
     }
 
-    public Humanoid(Vector2 position, int mass, int health, int damage, Hand leftHand, Hand rightHand, Armor armor) 
+    public Humanoid(Vector2 position, int mass, int health, int damage, Arm leftHand, Arm rightHand, Armor armor) 
     {
         super(position, mass, health, damage);
-        this.leftHand = leftHand;
-        this.rightHand = rightHand;
+        this.leftArm = leftHand;
+        this.rightArm = rightHand;
         this.armor = armor;
     }
 
     @Override
-    public int getMass() {
+    public int getMass() 
+    {
         return this.mass + armor.getMass();
     }
 
     @Override
-    public int getDamage() {
-        int damage = this.damage;
-        if (leftHand != null && leftHand.isMetallic()) {
+    public int getDamage() 
+    {
+        int damage = super.getDamage();
+        if (leftArm != null && leftArm.isMetallic()) 
+        {
             damage += 1;
         }
-        if (rightHand != null && rightHand.isMetallic()) {
+        if (rightArm != null && rightArm.isMetallic()) 
+        {
             damage += 1;
         }
         return damage;
@@ -57,16 +62,16 @@ public class Humanoid extends Creature {
         // or with code generation (by a preprocessor program).
         if (Prompt.bool("left hand?", "yes", "no"))
         {
-            leftHand = new Hand();
-            Entity.autoId(leftHand);
-            leftHand.promptInput();
+            leftArm = new Arm();
+            Entity.autoId(leftArm);
+            leftArm.promptInput();
         }
 
         if (Prompt.bool("right hand?", "yes", "no"))
         {
-            rightHand = new Hand();
-            Entity.autoId(rightHand);
-            rightHand.promptInput();
+            rightArm = new Arm();
+            Entity.autoId(rightArm);
+            rightArm.promptInput();
         }
 
         if (Prompt.bool("armor?", "yes", "no"))
@@ -84,16 +89,16 @@ public class Humanoid extends Creature {
         
         if (random.nextBoolean())
         {
-            leftHand = new Hand();
-            Entity.autoId(leftHand);
-            leftHand.randomize();
+            leftArm = new Arm();
+            Entity.autoId(leftArm);
+            leftArm.randomize();
         }
 
         if (random.nextBoolean())
         {
-            rightHand = new Hand();
-            Entity.autoId(rightHand);
-            rightHand.randomize();
+            rightArm = new Arm();
+            Entity.autoId(rightArm);
+            rightArm.randomize();
         }
 
         if (random.nextBoolean())

@@ -43,7 +43,7 @@ public class Creature extends Entity
         }
     }
 
-    public void move(Vector2 vec)
+    public final void move(Vector2 vec)
     {
         this.position.x += vec.x;
         this.position.y += vec.y;
@@ -59,7 +59,7 @@ public class Creature extends Entity
         return new Vector2(position.x, position.y);
     }
 
-    public int getHealth()
+    public final int getHealth()
     {
         return health;
     }

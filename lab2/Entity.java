@@ -5,11 +5,12 @@ import java.util.Random;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-abstract class Entity {
-    public int id = 0;
+abstract class Entity 
+{
+    private int id = 0;
     private static int currentId = 0;
-    protected static Random random = new Random(69); /*new Random();*/
-    protected static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    protected final static Random random = new Random(69); /*new Random();*/
+    protected final static Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public final int getId() 
     {
@@ -31,7 +32,8 @@ abstract class Entity {
 
     public abstract void randomize();
 
-    public final void serializeTo(String file) {
+    public final void serializeTo(String file) 
+    {
         try 
         {
             FileWriter stream = new FileWriter(file);

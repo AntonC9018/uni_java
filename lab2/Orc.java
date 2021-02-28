@@ -7,7 +7,7 @@ public class Orc extends Humanoid
     {
     }
 
-    public Orc(Vector2 position, int mass, int health, int damage, Hand leftHand, Hand rightHand, Armor armor) 
+    public Orc(Vector2 position, int mass, int health, int damage, Arm leftHand, Arm rightHand, Armor armor) 
     {
         super(position, mass, health, damage, leftHand, rightHand, armor);
     }

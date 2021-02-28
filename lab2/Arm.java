@@ -1,10 +1,10 @@
-public class Hand extends Entity
+public class Arm extends Entity
 {
     private boolean metallic;
 
-    public Hand(){}
+    public Arm(){}
 
-    public Hand(boolean metallic)
+    public Arm(boolean metallic)
     {
         super();
         Entity.autoId(this);
