@@ -19,7 +19,12 @@ public class Humanoid extends Creature
     @Override
     public int getMass() 
     {
-        return this.mass + armor.getMass();
+        int mass = super.getMass();
+        if (armor != null)
+        {
+            mass += armor.getMass();
+        }
+        return mass;
     }
 
     @Override
@@ -57,7 +62,7 @@ public class Humanoid extends Creature
     public void promptInput() 
     {
         super.promptInput();
-        // This can be cleaned up with templates
+        // This can be cleaned up with generics
         // That is Entity.promptCreate<Arm>(); or stuff like that
         // or with code generation (by a preprocessor program).
         if (Prompt.bool("left arm?", "yes", "no"))

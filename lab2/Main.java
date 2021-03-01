@@ -148,10 +148,11 @@ public class Main
         assert(((Creature)attackables[0]).isAlive() == false);
 
         // An array of just the ones that can dash, and are alive
-        IDashing[] dashings = Arrays.stream(entities)
-            .filter(e -> e instanceof Creature && e instanceof IDashing)
-            .filter(e -> ((Creature)e).isAlive())
-            .toArray(IDashing[]::new);
+        IDashing[] dashings = 
+            Arrays.stream(entities)
+                .filter(e -> e instanceof Creature && e instanceof IDashing)
+                .filter(e -> ((Creature)e).isAlive())
+                .toArray(IDashing[]::new);
 
         // It can dash
         dashings[0].dash(orc_1);

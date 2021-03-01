@@ -4,9 +4,7 @@ public class Creature extends Entity
     protected Vector2 position;
     protected int mass;
     protected int health;
-    protected int damage = defaultCreatureAttackDamage;
-
-    private final static int defaultCreatureAttackDamage = 1;
+    protected int damage;
 
     public Creature()
     {
@@ -91,7 +89,8 @@ public class Creature extends Entity
         health = Prompt.positiveInt("health");
         damage = Prompt.positiveOrZeroInt("damage");
     }
-
+    
+    @Override
     public void randomize()
     {
         position = new Vector2(random.nextInt(50), random.nextInt(50));

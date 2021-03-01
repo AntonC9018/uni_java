@@ -9,7 +9,7 @@ public class OrcWarrior extends Orc implements IDashing
         super(position, mass, health, damage, leftArm, rightArm, armor);
     }
 
-    public void tryDash(Creature creature)
+    public final void tryDash(Creature creature)
     {
         if (isAlive() && creature.isAlive())
         {
