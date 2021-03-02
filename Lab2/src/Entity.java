@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 
 abstract class Entity 
 {
-    private int id = 0;
+    private int id;
     private static int currentId = 0;
     private final static Gson gson = new GsonBuilder().setPrettyPrinting().create();
     protected final static Random random = new Random(69); /*new Random();*/

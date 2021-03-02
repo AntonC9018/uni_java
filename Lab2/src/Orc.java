@@ -1,7 +1,7 @@
 public class Orc extends Humanoid 
 {
     protected int rage;
-    protected static int rageIncrease = 1;
+    protected final static int rageIncrease = 1;
     
     public Orc()
     {
