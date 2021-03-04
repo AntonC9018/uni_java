@@ -17,15 +17,26 @@ abstract class Entity
         return id;
     }
 
-    protected final void setId(int id) 
+    protected final void setId(int id) throws EntityIdInitializedException
     {
+        if (this.id != 0)
+        {
+            throw new EntityIdInitializedException("The id has been already set");
+        }
         this.id = id;
     }
 
     public static void autoId(Entity entity) 
     {
         currentId++;
-        entity.setId(currentId);
+        try
+        {
+            entity.setId(currentId);
+        }
+        catch(EntityIdInitializedException exception)
+        {
+            System.out.println("Sorry, cannot initialize the id twice.");
+        }
     }
 
     public abstract void promptInput();

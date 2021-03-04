@@ -903,6 +903,156 @@ Enter armor mass: 2
 
 Все остальные действия проверяются не через аутпут в консоль, а ассертами. Поскольку не наблюдаем крашей, все проверенные функции работают корректно.
 
+
 ## Выводы
 
 В этой лабе доказал знания процесса наследования, применения интерфейсов, синтасксиса `static`, `final`, `extends`, `implements`, оввердайда методов, реализовал сериализацию, используя библиотеку `Gson`.
+
+
+# Лабораторная работа 3, Exceptions.
+
+## Задание
+
+Реализовать 3 примера использования эксепшенов:
+
+1. Для вынесения обработки ошибок в отдельный класс — класс ошибки. Я не смог найти применение этому методу в своем коде, поэтому просто покажу отдельный пример.
+
+2. Ленивая функция — передача внутренней ошибки во внешний код.
+
+3. Обработка стандартных эксепшенов.
+
+
+## Вынесение обработки ошибок в класс ошибки
+
+Вот один очень изощренный пример. Здесь, юзер оповещается через консоль о том, что значение value не было принято функцией, и причину этого. В ином случае, юзер оповещается о том, что значение было съедено. Для примера использовал верхний и нижний предел, как критерии ошибок. Создал отдельные классы ошибок для каждого из вариантов ошибки. У них есть метод `handle()`, который вызывается в блоке `catch`.
+
+```java
+public class Example
+{
+    public static void main(String[] args)
+    {
+        feed(ValueBound.lower - 1);
+        feed(ValueBound.upper + 1);
+        feed((ValueBound.lower + ValueBound.upper) / 2);
+    }
+    
+    public static void feed(int value)
+    {
+        try
+        {
+            if (value < ValueBound.lower)
+            {
+                throw new ValueLowException(value);
+            }
+            if (value > ValueBound.upper)
+            {
+                throw new ValueHighException(value);
+            }
+
+            System.out.printf("Nom-nom... Delicious %d.\n", value);
+        }
+        catch(ValueException exc)
+        {
+            exc.handle();
+            System.out.printf("Eugh... can't eat this stuff, sorry :/\n", value);
+        }
+    }
+}
+
+final class ValueBound
+{
+    private ValueBound(){}
+    static final int lower = 5;
+    static final int upper = 10;
+}
+
+abstract class ValueException extends RuntimeException
+{
+    int value;
+    ValueException(int value) { this.value = value; }
+    abstract void handle();
+}
+
+class ValueLowException extends ValueException
+{
+    ValueLowException(int value) { super(value); }
+
+    @Override
+    public void handle()
+    {
+        System.out.printf(
+            "The value %d is too low. It must be no less than %d.\n", 
+            value, ValueBound.lower
+        );
+    }
+}
+
+class ValueHighException extends ValueException
+{
+    ValueHighException(int value) { super(value); }
+
+    @Override
+    public void handle()
+    {
+        System.out.printf(
+            "The value %d is too high. It must be no more than %d.\n", 
+            value, ValueBound.upper
+        );
+    }
+}
+```
+
+И вот он аутпут при запуске:
+```
+The value 4 is too low. It must be no less than 5.
+Eugh... can't eat this stuff, sorry :/
+The value 11 is too high. It must be no more than 10.
+Eugh... can't eat this stuff, sorry :/
+Nom-nom... Delicious 7.
+```
+
+## Ленивая функция
+
+Добавим обработку ошибок в метод `setId()` класса `Entity`. Если айди уже было выставлено ранее (не равно 0), будем бросать ошибку. Сначала, добваим соответствующий класс ошибки:
+```java
+public class EntityIdInitializedException extends RuntimeException 
+{ 
+    public EntityIdInitializedException(String errorMessage) 
+    {
+        super(errorMessage);
+    }
+}
+```
+
+После этого, добавим проверку на ошибку в `setId()`.
+```java
+protected final void setId(int id) throws EntityIdInitializedException
+{
+    if (this.id != 0)
+    {
+        throw new EntityIdInitializedException("The id has been already set");
+    }
+    this.id = id;
+}
+```
+
+Эта функция применяется только в одном месте, `autoId()`, который генерирует айди автоматически. Если позволим ошибке выйти из `autoId()`, тогда коду, который использует эту функцию, даже сразу после инстанциирования новой сущности, придется хандлить эту ошибку, хотя ее в таком случае явно быть не может, или декорировать метод, где данная функция применяется, как `throws EntityIdInitializedException`. Это как минимум раздражительно. Поэтому ловим ошибку в самом `autoId()` и просто информируем юзера об ошибке через консоль.
+```java
+public static void autoId(Entity entity) 
+{
+    currentId++;
+    try
+    {
+        entity.setId(currentId);
+    }
+    catch(EntityIdInitializedException exception)
+    {
+        System.out.println("Sorry, cannot initialize the id twice.");
+    }
+}
+```
+
+
+## Стандартные ошибки
+
+Стандартные ошибки уже обрабатывались в моем коде, при запросе юзера значений с клавиатуры. см. [Prompt](#prompt).

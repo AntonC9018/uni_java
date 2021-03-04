@@ -1,4 +1,4 @@
-public class EntityIdInitializedException extends Exception 
+public class EntityIdInitializedException extends RuntimeException 
 { 
     private static final long serialVersionUID = 1L;
 
