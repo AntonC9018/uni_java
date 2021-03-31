@@ -35,7 +35,7 @@ public class Main {
             ghost.setNumPassengers(5);
             
             System.out.println("===================");
-            System.out.println("... Expecting zeros for the weights ...");
+            System.out.println("... Expecting random values for the weights ...");
             ghost.print();
             
             // Setting the weights using a reference to the internal array.

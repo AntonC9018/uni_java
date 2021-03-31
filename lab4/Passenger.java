@@ -16,11 +16,11 @@ public class Passenger
         this.height = height;
     }
 
-    private static String[] namesPool = {
+    private static final String[] namesPool = {
         "John", "Ben", "Jim", "Kate"
     };
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     public Passenger()
     {

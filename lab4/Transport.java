@@ -23,11 +23,9 @@ public class Transport {
         return passengers.size();
     }
 
-    // Schimbam numarul de elemente in passengerWeights
     public void setNumPassengers(int numPassengers) 
     {
-        int size = passengers.size();
-        for (int i = size; i < numPassengers; i++)
+        for (int i = passengers.size(); i < numPassengers; i++)
         {
             passengers.add(new Passenger());
         }
