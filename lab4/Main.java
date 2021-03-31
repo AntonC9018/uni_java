@@ -31,7 +31,7 @@ public class Main {
             }
         }
         {
-            // The rest of the array will be filled with 0's.
+            // The rest of the array will be filled with random passengers.
             ghost.setNumPassengers(5);
             
             System.out.println("===================");
