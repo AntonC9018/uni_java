@@ -1,5 +1,7 @@
 # Tehnici avansate de programare (Java), Laborator nr.4
 
+Тема: `ArrayList`.
+
 Выполнил: **Curmanschii Anton**, IA1901.
 
 [Ссылка на весь код для этой лабы на гитхабе](https://github.com/AntonC9018/uni_java/tree/master/lab4).
