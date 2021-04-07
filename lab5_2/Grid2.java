@@ -177,12 +177,9 @@ class ThreadContext2 implements Runnable
                 {
                     if (coordinator.runningThreadCount == 0)
                     {
-                        if (coordinator.itersLeft > 1)
-                        {
-                            coordinator.itersLeft--;
-                            coordinator.runningThreadCount = coordinator.totalThreadCount;
-                            coordinator.notifyAll();
-                        }
+                        coordinator.itersLeft--;
+                        coordinator.runningThreadCount = coordinator.totalThreadCount;
+                        coordinator.notifyAll();
                     }
                     else 
                     {
