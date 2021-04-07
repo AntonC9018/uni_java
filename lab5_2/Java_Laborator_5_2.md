@@ -1,6 +1,8 @@
 # Tehnici avansate de programare (Java), Laborator nr.5
 
-Тема: Общение между потоками.
+Тема: **Общение между потоками**.
+
+Выполнил: **Curmanschii Anton**, IA1901.
 
 [Ссылка на код на гитхабе.](https://github.com/AntonC9018/uni_java/tree/master/lab5_2)
 

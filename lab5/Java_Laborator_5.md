@@ -1,6 +1,6 @@
 # Tehnici avansate de programare (Java), Laborator nr.5
 
-Тема: Многопоточность.
+Тема: **Многопоточность**.
 
 Выполнил: **Curmanschii Anton**, IA1901.
 
