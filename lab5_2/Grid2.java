@@ -170,7 +170,15 @@ class ThreadContext2 implements Runnable
 
                 if (coordinator.runningThreadCount == 0)
                 {
+                    parent.printResult();
+                    System.out.println("--------------------------------------------------");
+
                     parent.swapBuffers();
+
+                    if (coordinator.itersLeft == 1)
+                    {
+                        parent.printResult();
+                    }
                 }
                 
                 if (coordinator.itersLeft > 1)

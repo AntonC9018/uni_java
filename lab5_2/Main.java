@@ -19,10 +19,7 @@ public class Main
     {
         Grid2 grid = new Grid2(1000);
         grid.randomize();
-        grid.printResult();
-        System.out.println("--------------------------------------------------");
         grid.performParallelIterations(1000, 3);
-        grid.printResult();
     }
 
     // public static int[] 
